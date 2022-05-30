@@ -1,17 +1,17 @@
-extends ImmediateGeometry
+extends MeshInstance3D
 
-export var points = [Vector3(0,0,0),Vector3(0,5,0)]
-export var startThickness = 0.1
-export var endThickness = 0.1
-export var cornerSmooth = 5
-export var capSmooth = 5
-export var drawCaps = true
-export var drawCorners = true
-export var globalCoords = true
-export var scaleTexture = true
+@export var points = [Vector3(0,0,0),Vector3(0,5,0)]
+@export var startThickness = 0.1
+@export var endThickness = 0.1
+@export var cornerSmooth = 5
+@export var capSmooth = 5
+@export var drawCaps = true
+@export var drawCorners = true
+@export var globalCoords = true
+@export var scaleTexture = true
 
-var camera
-var cameraOrigin
+var camera : Camera3D
+var cameraOrigin : Vector3
 
 func _ready():
 	pass
@@ -20,7 +20,7 @@ func _process(delta):
 	if points.size() < 2:
 		return
 	
-	camera = get_viewport().get_camera()
+	camera = get_viewport().get_camera_3d()
 	if camera == null:
 		return
 	cameraOrigin = to_local(camera.get_global_transform().origin)
@@ -30,8 +30,8 @@ func _process(delta):
 	var thickness = lerp(startThickness, endThickness, progress);
 	var nextThickness = lerp(startThickness, endThickness, progress + progressStep);
 	
-	clear()
-	begin(Mesh.PRIMITIVE_TRIANGLES)
+	mesh.clear_surfaces()
+	mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES)
 	
 	for i in range(points.size() - 1):
 		var A = points[i]
@@ -59,31 +59,31 @@ func _process(delta):
 			var ABFloor = floor(ABLen)
 			var ABFrac = ABLen - ABFloor
 			
-			set_uv(Vector2(ABFloor, 0))
-			add_vertex(AtoABStart)
-			set_uv(Vector2(-ABFrac, 0))
-			add_vertex(BtoABEnd)
-			set_uv(Vector2(ABFloor, 1))
-			add_vertex(AfromABStart)
-			set_uv(Vector2(-ABFrac, 0))
-			add_vertex(BtoABEnd)
-			set_uv(Vector2(-ABFrac, 1))
-			add_vertex(BfromABEnd)
-			set_uv(Vector2(ABFloor, 1))
-			add_vertex(AfromABStart)
+			mesh.surface_set_uv(Vector2(ABFloor, 0))
+			mesh.surface_add_vertex(AtoABStart)
+			mesh.surface_set_uv(Vector2(-ABFrac, 0))
+			mesh.surface_add_vertex(BtoABEnd)
+			mesh.surface_set_uv(Vector2(ABFloor, 1))
+			mesh.surface_add_vertex(AfromABStart)
+			mesh.surface_set_uv(Vector2(-ABFrac, 0))
+			mesh.surface_add_vertex(BtoABEnd)
+			mesh.surface_set_uv(Vector2(-ABFrac, 1))
+			mesh.surface_add_vertex(BfromABEnd)
+			mesh.surface_set_uv(Vector2(ABFloor, 1))
+			mesh.surface_add_vertex(AfromABStart)
 		else:
-			set_uv(Vector2(1, 0))
-			add_vertex(AtoABStart)
-			set_uv(Vector2(0, 0))
-			add_vertex(BtoABEnd)
-			set_uv(Vector2(1, 1))
-			add_vertex(AfromABStart)
-			set_uv(Vector2(0, 0))
-			add_vertex(BtoABEnd)
-			set_uv(Vector2(0, 1))
-			add_vertex(BfromABEnd)
-			set_uv(Vector2(1, 1))
-			add_vertex(AfromABStart)
+			mesh.surface_set_uv(Vector2(1, 0))
+			mesh.surface_add_vertex(AtoABStart)
+			mesh.surface_set_uv(Vector2(0, 0))
+			mesh.surface_add_vertex(BtoABEnd)
+			mesh.surface_set_uv(Vector2(1, 1))
+			mesh.surface_add_vertex(AfromABStart)
+			mesh.surface_set_uv(Vector2(0, 0))
+			mesh.surface_add_vertex(BtoABEnd)
+			mesh.surface_set_uv(Vector2(0, 1))
+			mesh.surface_add_vertex(BfromABEnd)
+			mesh.surface_set_uv(Vector2(1, 1))
+			mesh.surface_add_vertex(AfromABStart)
 		
 		if i == points.size() - 2:
 			if drawCaps:
@@ -108,7 +108,7 @@ func _process(delta):
 		thickness = lerp(startThickness, endThickness, progress);
 		nextThickness = lerp(startThickness, endThickness, progress + progressStep);
 	
-	end()
+	mesh.surface_end()
 
 func cap(center, pivot, thickness, smoothing):
 	var orthogonal = (cameraOrigin - center).cross(center - pivot).normalized() * thickness;
@@ -124,12 +124,12 @@ func cap(center, pivot, thickness, smoothing):
 		array[i] = center + (orthogonal.rotated(axis, lerp(0, PI, float(i) / smoothing)));
 	
 	for i in range(1, smoothing + 1):
-		set_uv(Vector2(0, (i - 1) / smoothing))
-		add_vertex(array[i - 1]);
-		set_uv(Vector2(0, (i - 1) / smoothing))
-		add_vertex(array[i]);
-		set_uv(Vector2(0.5, 0.5))
-		add_vertex(center);
+		mesh.surface_set_uv(Vector2(0, (i - 1) / smoothing))
+		mesh.surface_add_vertex(array[i - 1]);
+		mesh.surface_set_uv(Vector2(0, (i - 1) / smoothing))
+		mesh.surface_add_vertex(array[i]);
+		mesh.surface_set_uv(Vector2(0.5, 0.5))
+		mesh.surface_add_vertex(center);
 		
 func corner(center, start, end, smoothing):
 	var array = []
@@ -146,10 +146,10 @@ func corner(center, start, end, smoothing):
 		array[i] = center + offset.rotated(axis, lerp(0, angle, float(i) / smoothing));
 	
 	for i in range(1, smoothing + 1):
-		set_uv(Vector2(0, (i - 1) / smoothing))
-		add_vertex(array[i - 1]);
-		set_uv(Vector2(0, (i - 1) / smoothing))
-		add_vertex(array[i]);
-		set_uv(Vector2(0.5, 0.5))
-		add_vertex(center);
+		mesh.surface_set_uv(Vector2(0, (i - 1) / smoothing))
+		mesh.surface_add_vertex(array[i - 1]);
+		mesh.surface_set_uv(Vector2(0, (i - 1) / smoothing))
+		mesh.surface_add_vertex(array[i]);
+		mesh.surface_set_uv(Vector2(0.5, 0.5))
+		mesh.surface_add_vertex(center);
 		

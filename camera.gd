@@ -1,7 +1,7 @@
-extends Camera
+extends Camera3D
 
-onready var line = get_node("../../LineRenderer")
-onready var orbit = get_node("../../Orbit")
+@onready var line = get_node("../../LineRenderer")
+@onready var orbit = get_node("../../Orbit")
 var mouseDown = false
 var orbitSpeed = 0.5
 var orbitDir = 0
