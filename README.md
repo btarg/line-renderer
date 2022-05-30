@@ -1,5 +1,5 @@
 # Line Renderer
-A GDScript implementation of a line renderer in Godot, useful for rendering cylindrical volume such as lasers, trails, etc. Based on the helpful C# implementation by @paulohyy at https://github.com/paulohyy/linerenderer, with some additional features such as UV tiling and a .tscn file for ease of use.
+A GDScript implementation of a line renderer in Godot 4.0, useful for rendering cylindrical volume such as lasers, trails, etc. Based on the Godot 3.0 version by @dbp8890 at https://github.com/dbp8890/line-renderer, which is based on the helpful C# implementation by @paulohyy at https://github.com/paulohyy/linerenderer and added some additional features such as UV tiling and a .tscn file for ease of use.
 
 ## Instructions
 1. Simply download and unzip the folder, which contains a demo project. If the demo project is not needed, the `LineRenderer` subfolder can be copied directly into the Godot project.
