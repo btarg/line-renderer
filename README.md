@@ -25,7 +25,7 @@ To edit the line's points, simply edit the `points` member variable of the line 
 To use the demo, click anywhere on the screen to add a line segment. The camera automatically orbits around a point; use the arrow keys to change direction.
 
 ## License
-MIT License (credit to @paulohyy for initial implementation)
+MIT License (credit to @dbp8890 and @paulohyy for initial implementations)
 
 ## Other
 Next up: trails! I'll try to see if I can implement this if I have the time. (Although this can be done with the Line Renderer, camera-facing/billboarded trails are not always desired.)
