@@ -3,7 +3,7 @@ A GDScript implementation of a line renderer in Godot 4.0, useful for rendering 
 
 ## Instructions
 1. Simply download and unzip the folder, which contains a demo project. If the demo project is not needed, the `LineRenderer` subfolder can be copied directly into the Godot project.
-2. Drag and drop the `LineRenderer.tscn` scene into the project, and you should see a line! **Note: There appears to be a bug in certain versions of Godot 3.0 that causes problems involving not being able to edit instanced arrays. Make sure to right click and toggle "Discard Instancing" if you encounter this.**
+2. Drag and drop the `LineRenderer.tscn` scene into the project, and you should see a line!
 
 To edit the line's points, simply edit the `points` member variable of the line renderer, and add/remove points from the array (see demo project for details). This can also be done via the editor in Godot.
 
@@ -26,6 +26,3 @@ To use the demo, click anywhere on the screen to add a line segment. The camera 
 
 ## License
 MIT License (credit to @dbp8890 and @paulohyy for initial implementations)
-
-## Other
-Next up: trails! I'll try to see if I can implement this if I have the time. (Although this can be done with the Line Renderer, camera-facing/billboarded trails are not always desired.)
