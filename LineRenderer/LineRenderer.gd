@@ -16,7 +16,7 @@ var cameraOrigin : Vector3
 func _ready():
 	pass
 
-func _process(delta):
+func _process(_delta):
 	if points.size() < 2:
 		return
 	
@@ -121,7 +121,7 @@ func cap(center, pivot, thickness, smoothing):
 	array[smoothing] = center - orthogonal;
 	
 	for i in range(1, smoothing):
-		array[i] = center + (orthogonal.rotated(axis, lerp(0, PI, float(i) / smoothing)));
+		array[i] = center + (orthogonal.rotated(axis, lerp(0.0, PI, float(i) / smoothing)));
 	
 	for i in range(1, smoothing + 1):
 		mesh.surface_set_uv(Vector2(0, (i - 1) / smoothing))
@@ -143,7 +143,7 @@ func corner(center, start, end, smoothing):
 	var angle = offset.angle_to(end - center)
 	
 	for i in range(1, smoothing):
-		array[i] = center + offset.rotated(axis, lerp(0, angle, float(i) / smoothing));
+		array[i] = center + offset.rotated(axis, lerp(0.0, angle, float(i) / smoothing));
 	
 	for i in range(1, smoothing + 1):
 		mesh.surface_set_uv(Vector2(0, (i - 1) / smoothing))
