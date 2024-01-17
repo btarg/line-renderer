@@ -6,3 +6,8 @@ export_presets.cfg
 
 # Mono-specific ignores
 .mono/
+
+# Ignoring Project Files
+main.tscn
+default_env.tres
+project.godot
