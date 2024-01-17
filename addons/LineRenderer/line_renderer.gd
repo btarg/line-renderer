@@ -1,15 +1,24 @@
 @tool
 extends MeshInstance3D
 
-@export var points = [Vector3(0,0,0),Vector3(0,5,0)]
-@export var startThickness = 0.1
-@export var endThickness = 0.1
-@export var cornerSmooth = 5
-@export var capSmooth = 5
-@export var drawCaps = true
-@export var drawCorners = true
-@export var globalCoords = true
-@export var scaleTexture = true
+@export var points: Array[Vector3] = [Vector3(0,0,0),Vector3(0,5,0)]:
+	set(new_points): points = new_points
+@export var start_thickness:float = 0.1:
+	set(new_start_thickness): start_thickness = new_start_thickness
+@export var end_thickness:float = 0.1:
+	set(new_end_thickness): end_thickness = new_end_thickness
+@export var corner_resolution:int = 5:
+	set(new_corner_resolution): corner_resolution = new_corner_resolution
+@export var cap_resolution:int = 5:
+	set(new_cap_resolution): cap_resolution = new_cap_resolution
+@export var draw_caps:bool = true:
+	set(new_draw_caps): draw_caps = new_draw_caps
+@export var draw_crners:bool = true:
+	set(new_draw_crners): draw_crners = new_draw_crners
+@export var use_global_coords:bool = true:
+	set(new_use_global_coords): use_global_coords = new_use_global_coords
+@export var tile_texture:bool = true:
+	set(new_tile_texture): tile_texture = new_tile_texture
 
 var camera : Camera3D
 var cameraOrigin : Vector3
@@ -31,8 +40,8 @@ func _process(_delta):
 	
 	var progressStep = 1.0 / points.size();
 	var progress = 0;
-	var thickness = lerp(startThickness, endThickness, progress);
-	var nextThickness = lerp(startThickness, endThickness, progress + progressStep);
+	var thickness = lerp(start_thickness, end_thickness, progress);
+	var nextThickness = lerp(start_thickness, end_thickness, progress + progressStep);
 	
 	mesh.clear_surfaces()
 	mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -41,7 +50,7 @@ func _process(_delta):
 		var A = points[i]
 		var B = points[i+1]
 	
-		if globalCoords:
+		if use_global_coords:
 			A = to_local(A)
 			B = to_local(B)
 	
@@ -55,10 +64,10 @@ func _process(_delta):
 		var BfromABEnd = B - orthogonalABEnd
 		
 		if i == 0:
-			if drawCaps:
-				cap(A, B, thickness, capSmooth)
+			if draw_caps:
+				cap(A, B, thickness, cap_resolution)
 		
-		if scaleTexture:
+		if tile_texture:
 			var ABLen = AB.length()
 			var ABFloor = floor(ABLen)
 			var ABFrac = ABLen - ABFloor
@@ -90,12 +99,12 @@ func _process(_delta):
 			mesh.surface_add_vertex(AfromABStart)
 		
 		if i == points.size() - 2:
-			if drawCaps:
-				cap(B, A, nextThickness, capSmooth)
+			if draw_caps:
+				cap(B, A, nextThickness, cap_resolution)
 		else:
-			if drawCorners:
+			if draw_crners:
 				var C = points[i+2]
-				if globalCoords:
+				if use_global_coords:
 					C = to_local(C)
 				
 				var BC = C - B;
@@ -104,13 +113,13 @@ func _process(_delta):
 				var angleDot = AB.dot(orthogonalBCStart)
 				
 				if angleDot > 0:
-					corner(B, BtoABEnd, B + orthogonalBCStart, cornerSmooth)
+					corner(B, BtoABEnd, B + orthogonalBCStart, corner_resolution)
 				else:
-					corner(B, B - orthogonalBCStart, BfromABEnd, cornerSmooth)
+					corner(B, B - orthogonalBCStart, BfromABEnd, corner_resolution)
 		
 		progress += progressStep;
-		thickness = lerp(startThickness, endThickness, progress);
-		nextThickness = lerp(startThickness, endThickness, progress + progressStep);
+		thickness = lerp(start_thickness, end_thickness, progress);
+		nextThickness = lerp(start_thickness, end_thickness, progress + progressStep);
 	
 	mesh.surface_end()
 
