@@ -1,6 +1,6 @@
 extends Camera3D
 
-@onready var line = get_node("../../LineRenderer")
+@onready var line = get_node("../../LineRenderer3D")
 @onready var orbit = get_node("../../Orbit")
 var mouseDown = false
 var orbitSpeed = 0.5
