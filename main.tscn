@@ -1,23 +1,21 @@
-[gd_scene load_steps=5 format=3 uid="uid://ckhs1q5dhhtbs"]
+[gd_scene load_steps=5 format=3 uid="uid://03quolqd33yr"]
 
-[ext_resource type="PackedScene" uid="uid://25pl1mvpb0ct" path="res://LineRenderer/LineRenderer.tscn" id="1"]
-[ext_resource type="Texture2D" uid="uid://mblnkohmbep2" path="res://line.png" id="2"]
-[ext_resource type="Script" path="res://camera.gd" id="3"]
+[ext_resource type="Texture2D" uid="uid://mblnkohmbep2" path="res://line.png" id="1_f0p7k"]
+[ext_resource type="Script" path="res://addons/LineRenderer/line_renderer.gd" id="2_c14b5"]
 
-[sub_resource type="StandardMaterial3D" id="1"]
-transparency = 1
-shading_mode = 0
-albedo_color = Color(0.969482, 1, 0.609375, 1)
-albedo_texture = ExtResource( "2" )
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r4qrb"]
+albedo_texture = ExtResource("1_f0p7k")
 
-[node name="Spatial" type="Node3D"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_c4ena"]
 
-[node name="LineRenderer" parent="." instance=ExtResource( "1" )]
-material_override = SubResource( "1" )
-points = [Vector3(0, 0, 0), Vector3(0, 4, 0)]
+[node name="Node3D" type="Node3D"]
 
-[node name="Orbit" type="Node3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_r4qrb")
+mesh = SubResource("ArrayMesh_c4ena")
+script = ExtResource("2_c14b5")
+startThickness = 1.0
+endThickness = 1.0
 
-[node name="Camera" type="Camera3D" parent="Orbit"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
-script = ExtResource( "3" )
+[node name="Camera3D" type="Camera3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.31369)
