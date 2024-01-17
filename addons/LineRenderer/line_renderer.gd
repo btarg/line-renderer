@@ -14,6 +14,9 @@ extends MeshInstance3D
 var camera : Camera3D
 var cameraOrigin : Vector3
 
+func _enter_tree():
+	mesh = ImmediateMesh.new()
+
 func _ready():
 	pass
 
