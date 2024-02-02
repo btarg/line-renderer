@@ -38,30 +38,30 @@ func _process(_delta):
 		return
 	cameraOrigin = to_local(camera.get_global_transform().origin)
 	
-	var progressStep = 1.0 / points.size();
-	var progress = 0;
-	var thickness = lerp(start_thickness, end_thickness, progress);
-	var nextThickness = lerp(start_thickness, end_thickness, progress + progressStep);
+	var progressStep:float = 1.0 / points.size();
+	var progress:float = 0;
+	var thickness:float = lerp(start_thickness, end_thickness, progress);
+	var nextThickness:float = lerp(start_thickness, end_thickness, progress + progressStep);
 	
 	mesh.clear_surfaces()
 	mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES)
 	
 	for i in range(points.size() - 1):
-		var A = points[i]
-		var B = points[i+1]
+		var A:Vector3 = points[i]
+		var B:Vector3 = points[i+1]
 	
 		if use_global_coords:
 			A = to_local(A)
 			B = to_local(B)
 	
-		var AB = B - A;
-		var orthogonalABStart = (cameraOrigin - ((A + B) / 2)).cross(AB).normalized() * thickness;
-		var orthogonalABEnd = (cameraOrigin - ((A + B) / 2)).cross(AB).normalized() * nextThickness;
+		var AB:Vector3 = B - A;
+		var orthogonalABStart:Vector3 = (cameraOrigin - ((A + B) / 2)).cross(AB).normalized() * thickness;
+		var orthogonalABEnd:Vector3 = (cameraOrigin - ((A + B) / 2)).cross(AB).normalized() * nextThickness;
 		
-		var AtoABStart = A + orthogonalABStart
-		var AfromABStart = A - orthogonalABStart
-		var BtoABEnd = B + orthogonalABEnd
-		var BfromABEnd = B - orthogonalABEnd
+		var AtoABStart:Vector3 = A + orthogonalABStart
+		var AfromABStart:Vector3 = A - orthogonalABStart
+		var BtoABEnd:Vector3 = B + orthogonalABEnd
+		var BfromABEnd:Vector3 = B - orthogonalABEnd
 		
 		if i == 0:
 			if draw_caps:
@@ -112,9 +112,9 @@ func _process(_delta):
 				
 				var angleDot = AB.dot(orthogonalBCStart)
 				
-				if angleDot > 0:
+				if angleDot > 0 and not angleDot == 1:
 					corner(B, BtoABEnd, B + orthogonalBCStart, corner_resolution)
-				else:
+				elif angleDot < 0 and not angleDot == -1:
 					corner(B, B - orthogonalBCStart, BfromABEnd, corner_resolution)
 		
 		progress += progressStep;
@@ -123,46 +123,46 @@ func _process(_delta):
 	
 	mesh.surface_end()
 
-func cap(center, pivot, thickness, smoothing):
-	var orthogonal = (cameraOrigin - center).cross(center - pivot).normalized() * thickness;
-	var axis = (center - cameraOrigin).normalized();
+func cap(center:Vector3, pivot:Vector3, thickness:float, cap_resolution:int):
+	var orthogonal:Vector3 = (cameraOrigin - center).cross(center - pivot).normalized() * thickness;
+	var axis:Vector3 = (center - cameraOrigin).normalized();
 	
-	var array = []
-	for i in range(smoothing + 1):
-		array.append(Vector3(0,0,0))
-	array[0] = center + orthogonal;
-	array[smoothing] = center - orthogonal;
+	var vertex_array:Array = []
+	for i in range(cap_resolution + 1):
+		vertex_array.append(Vector3(0,0,0))
+	vertex_array[0] = center + orthogonal;
+	vertex_array[cap_resolution] = center - orthogonal;
 	
-	for i in range(1, smoothing):
-		array[i] = center + (orthogonal.rotated(axis, lerp(0.0, PI, float(i) / smoothing)));
+	for i in range(1, cap_resolution):
+		vertex_array[i] = center + (orthogonal.rotated(axis, lerp(0.0, PI, float(i) / cap_resolution)));
 	
-	for i in range(1, smoothing + 1):
-		mesh.surface_set_uv(Vector2(0, (i - 1) / smoothing))
-		mesh.surface_add_vertex(array[i - 1]);
-		mesh.surface_set_uv(Vector2(0, (i - 1) / smoothing))
-		mesh.surface_add_vertex(array[i]);
+	for i in range(1, cap_resolution + 1):
+		mesh.surface_set_uv(Vector2(0, (i - 1) / cap_resolution))
+		mesh.surface_add_vertex(vertex_array[i - 1]);
+		mesh.surface_set_uv(Vector2(0, (i - 1) / cap_resolution))
+		mesh.surface_add_vertex(vertex_array[i]);
 		mesh.surface_set_uv(Vector2(0.5, 0.5))
 		mesh.surface_add_vertex(center);
 		
-func corner(center, start, end, smoothing):
-	var array = []
-	for i in range(smoothing + 1):
-		array.append(Vector3(0,0,0))
-	array[0] = start;
-	array[smoothing] = end;
+func corner(center:Vector3, start:Vector3, end:Vector3, cap_resolution:int):
+	var vertex_array:Array = []
+	for i in range(cap_resolution + 1):
+		vertex_array.append(Vector3(0,0,0))
+	vertex_array[0] = start;
+	vertex_array[cap_resolution] = end;
 	
-	var axis = start.cross(end).normalized()
-	var offset = start - center
-	var angle = offset.angle_to(end - center)
+	var axis:Vector3 = start.cross(end).normalized()
+	var offset:Vector3 = start - center
+	var angle:float = offset.angle_to(end - center)
 	
-	for i in range(1, smoothing):
-		array[i] = center + offset.rotated(axis, lerp(0.0, angle, float(i) / smoothing));
+	for i in range(1, cap_resolution):
+		vertex_array[i] = center + offset.rotated(axis, lerp(0.0, angle, float(i) / cap_resolution));
 	
-	for i in range(1, smoothing + 1):
-		mesh.surface_set_uv(Vector2(0, (i - 1) / smoothing))
-		mesh.surface_add_vertex(array[i - 1]);
-		mesh.surface_set_uv(Vector2(0, (i - 1) / smoothing))
-		mesh.surface_add_vertex(array[i]);
+	for i in range(1, cap_resolution + 1):
+		mesh.surface_set_uv(Vector2(0, (i - 1) / cap_resolution))
+		mesh.surface_add_vertex(vertex_array[i - 1]);
+		mesh.surface_set_uv(Vector2(0, (i - 1) / cap_resolution))
+		mesh.surface_add_vertex(vertex_array[i]);
 		mesh.surface_set_uv(Vector2(0.5, 0.5))
 		mesh.surface_add_vertex(center);
 		
