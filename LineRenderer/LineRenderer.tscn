@@ -1,9 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://25pl1mvpb0ct"]
-
-[ext_resource type="Script" path="res://LineRenderer/LineRenderer.gd" id="1"]
-
-[sub_resource type="ImmediateMesh" id="ImmediateMesh_wnu2f"]
-
-[node name="LineRenderer" type="MeshInstance3D"]
-mesh = SubResource( "ImmediateMesh_wnu2f" )
-script = ExtResource( "1" )
