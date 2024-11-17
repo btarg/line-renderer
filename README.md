@@ -29,4 +29,4 @@ To edit the line's points, simply edit the `points` member variable of the line 
 To use the demo, click anywhere on the screen to add a line segment. The camera automatically orbits around a point; use the arrow keys to change direction.
 
 ## License
-MIT License (credit to @dbp8890, @paulohyy and @LemiSt24 for initial implementations)
+1) MIT License (credit to @dbp8890, @paulohyy and @LemiSt24 for initial implementations)
